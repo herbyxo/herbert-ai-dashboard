@@ -9,14 +9,12 @@ import {
   LogOut,
   Building2,
   ExternalLink,
-  BrainCircuit,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Overview', href: '/owner', icon: LayoutDashboard },
   { label: 'System logs', href: '/owner/logs', icon: ScrollText },
   { label: 'Agents', href: '/owner/agents', icon: Bot },
-  { label: 'Claude', href: '/owner/claude', icon: BrainCircuit },
 ]
 
 export default function OwnerSidebar({ user }) {
