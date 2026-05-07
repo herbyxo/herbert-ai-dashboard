@@ -1,27 +1,51 @@
-import { ownerSummary } from '@/lib/ownerData'
+import { getOwnerSummary, getOwnerAgents } from '@/lib/ownerData'
 import Link from 'next/link'
 
-export default function OwnerOverviewPage() {
+export default async function OwnerOverviewPage() {
+  const summary = await getOwnerSummary()
+  const agents = await getOwnerAgents()
+  const unhealthy = agents.filter(a => a.status !== 'healthy').length
+
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">Owner overview</h1>
-        <p className="text-gray-500 text-sm mt-1">Deployed agents and platform health (mock data until you wire your telemetry).</p>
+        <p className="text-gray-500 text-sm mt-1">Deployed agents, platform health, and operating posture.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Stat label="Agents online" value={`${ownerSummary.agents_online} / ${ownerSummary.agents_total}`} />
-        <Stat label="24h request volume" value={String(ownerSummary.requests_last_24h)} />
-        <Stat label="24h error rate" value={ownerSummary.error_rate_24h} />
-        <Stat label="Last incident" value={ownerSummary.last_incident || '—'} />
+        <Stat label="Agents online" value={`${summary.agents_online} / ${summary.agents_total}`} />
+        <Stat label="24h request volume" value={String(summary.requests_last_24h)} />
+        <Stat label="24h error rate" value={summary.error_rate_24h} />
+        <Stat label="Last incident" value={summary.last_incident || '—'} />
       </div>
 
-      <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5 mb-8">
-        <h2 className="text-sm font-semibold text-indigo-900">Access control</h2>
-        <p className="text-sm text-indigo-800 mt-1">
-          This area is limited to email addresses in the <code className="text-xs bg-indigo-100 px-1 rounded">OWNER_EMAILS</code> environment
-          variable. Add your Google account email (comma-separated for multiple) and sign in with Google, or with credentials that use that
-          same email if you extend auth.
+      <div className="grid md:grid-cols-2 gap-4 mb-8">
+        <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5">
+          <h2 className="text-sm font-semibold text-indigo-900">Access control</h2>
+          <p className="text-sm text-indigo-800 mt-1">
+            Owner access is controlled by <code className="text-xs bg-indigo-100 px-1 rounded">OWNER_EMAILS</code>.
+            This keeps operational controls limited to allowlisted accounts.
+          </p>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h2 className="text-sm font-semibold text-gray-900">Operational snapshot</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            {unhealthy} agent{unhealthy === 1 ? '' : 's'} need attention across voice/chat/batch surfaces.
+          </p>
+          <Link href="/owner/agents" className="inline-block mt-2 text-sm text-indigo-600 hover:text-indigo-800">
+            Review agent status →
+          </Link>
+        </div>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-8">
+        <h2 className="text-sm font-semibold text-gray-900">Integration endpoints</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Connect live telemetry with <code className="text-xs bg-gray-100 px-1 rounded">OWNER_API_BASE_URL</code> or
+          explicit endpoint vars (<code className="text-xs bg-gray-100 px-1 rounded">OWNER_SUMMARY_ENDPOINT</code>,
+          <code className="text-xs bg-gray-100 px-1 rounded"> OWNER_AGENTS_ENDPOINT</code>,
+          <code className="text-xs bg-gray-100 px-1 rounded"> OWNER_LOGS_ENDPOINT</code>).
         </p>
       </div>
 

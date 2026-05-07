@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Herbert AI Dashboard
 
-## Getting Started
+Two authenticated surfaces in one app:
+- ` /dashboard` for property managers (client side)
+- ` /owner` for operator/owner controls
 
-First, run the development server:
+## Local run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000/login`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Auth
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Credentials login reads `DEMO_EMAIL` + `DEMO_PASSWORD`
+- Owner area allowlist reads `OWNER_EMAILS` (comma-separated)
 
-## Learn More
+## Live integrations (n8n / orchestrator)
 
-To learn more about Next.js, take a look at the following resources:
+All data sources support fallback to mock mode when env vars are missing.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Client dashboard envs:
+- `CLIENT_API_BASE_URL` (optional base, e.g. `https://your-n8n-host/webhook`)
+- `CLIENT_REQUESTS_ENDPOINT` (optional full URL override)
+- `CLIENT_STATS_ENDPOINT` (optional full URL override)
+- `REQUEST_DECISION_ENDPOINT` (approve/deny action webhook)
+- `CLIENT_API_KEY` (sent as `x-api-key`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Owner dashboard envs:
+- `OWNER_API_BASE_URL` (optional base URL)
+- `OWNER_SUMMARY_ENDPOINT`
+- `OWNER_AGENTS_ENDPOINT`
+- `OWNER_LOGS_ENDPOINT`
+- `OWNER_AGENT_ACTION_ENDPOINT` (restart/scale action webhook)
+- `OWNER_API_KEY` (sent as `x-api-key`)
 
-## Deploy on Vercel
+## Action APIs in this app
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+These are internal API routes used by the UI:
+- `POST /api/requests/:id/decision` with `{ action: "approve" | "deny", reason?: string }`
+- `POST /api/owner/agents/:id/action` with `{ action: "restart" | "scale", scale_to?: number }`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If corresponding endpoint env vars are not set, these routes return mock success responses so the UI remains usable.
+
+## Production deploy
+
+```bash
+npm run lint
+npm run build
+vercel --prod
+```
+
+## Operations documentation
+
+- See `docs/OPERATING_MANUAL.md` for architecture, onboarding, runbooks, and business tracking checklists.

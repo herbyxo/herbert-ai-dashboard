@@ -1,5 +1,6 @@
-import { mockDeployedAgents } from '@/lib/ownerData'
+import { getOwnerAgents } from '@/lib/ownerData'
 import { formatDateFull } from '@/lib/utils'
+import OwnerAgentActions from '@/components/OwnerAgentActions'
 
 const statusClass = {
   healthy: 'bg-emerald-100 text-emerald-800',
@@ -17,16 +18,32 @@ export const metadata = {
   title: 'Agents — Owner',
 }
 
-export default function OwnerAgentsPage() {
+function hoursSince(iso) {
+  const ms = Date.now() - new Date(iso).getTime()
+  return Math.max(0, Math.round(ms / (1000 * 60 * 60)))
+}
+
+export default async function OwnerAgentsPage() {
+  const agents = await getOwnerAgents()
+  const healthyCount = agents.filter(a => a.status === 'healthy').length
+  const degradedCount = agents.filter(a => a.status === 'degraded').length
+  const stoppedCount = agents.filter(a => a.status === 'stopped').length
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">Deployed agents</h1>
-        <p className="text-gray-500 text-sm mt-1">Inventory of voice, chat, and batch workers. Actions below are UI placeholders for your API.</p>
+        <p className="text-gray-500 text-sm mt-1">Inventory of voice, chat, and batch workers with health posture.</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <SummaryCard label="Healthy" value={healthyCount} tone="green" />
+        <SummaryCard label="Degraded" value={degradedCount} tone="yellow" />
+        <SummaryCard label="Stopped" value={stoppedCount} tone="gray" />
       </div>
 
       <div className="space-y-4">
-        {mockDeployedAgents.map(agent => (
+        {agents.map(agent => (
           <div
             key={agent.id}
             className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4"
@@ -53,29 +70,29 @@ export default function OwnerAgentsPage() {
                 <span>
                   <span className="text-gray-400">Last heartbeat</span> · {formatDateFull(agent.last_heartbeat)}
                 </span>
+                <span>
+                  <span className="text-gray-400">Staleness</span> · {hoursSince(agent.last_heartbeat)}h
+                </span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2 shrink-0">
-              <button
-                type="button"
-                disabled
-                className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed"
-                title="Connect to your orchestration API to enable"
-              >
-                Restart
-              </button>
-              <button
-                type="button"
-                disabled
-                className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed"
-                title="Connect to your orchestration API to enable"
-              >
-                Scale
-              </button>
-            </div>
+            <OwnerAgentActions agentId={agent.id} />
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+function SummaryCard({ label, value, tone }) {
+  const tones = {
+    green: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    yellow: 'bg-amber-50 border-amber-200 text-amber-800',
+    gray: 'bg-gray-50 border-gray-200 text-gray-700',
+  }
+  return (
+    <div className={`rounded-xl border px-4 py-3 ${tones[tone] || tones.gray}`}>
+      <p className="text-xs font-medium uppercase tracking-wide opacity-70">{label}</p>
+      <p className="text-2xl font-semibold">{value}</p>
     </div>
   )
 }
