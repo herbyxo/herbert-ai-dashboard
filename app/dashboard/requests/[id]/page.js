@@ -5,8 +5,9 @@ import { urgencyBadge, statusBadge, formatDateFull } from '@/lib/utils'
 import ApproveActions from '@/components/ApproveActions'
 
 export default async function RequestDetail({ params }) {
+  const { id } = await params
   const requests = await getClientRequests()
-  const req = requests.find(r => r.id === params.id)
+  const req = requests.find(r => r.id === id)
   if (!req) notFound()
 
   return (
@@ -86,7 +87,7 @@ export default async function RequestDetail({ params }) {
               <p className="text-gray-900 font-medium">{formatDateFull(req.booking.scheduled_time)}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs mb-0.5">AroFlo Job ID</p>
+              <p className="text-gray-400 text-xs mb-0.5">Job Reference</p>
               <p className="text-gray-900 font-medium font-mono">{req.booking.aroflo_job_id}</p>
             </div>
           </div>

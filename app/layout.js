@@ -1,8 +1,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Herbert AI Dashboard',
-  description: 'Property Manager Dashboard — Herbert AI',
+  title: 'Northbridge Property Co. — Maintenance Portal',
+  description: 'AI-powered tenant maintenance intake and approvals. Powered by Herbert AI.',
 }
 
 export default function RootLayout({ children }) {

@@ -16,7 +16,7 @@ export default async function DashboardOverview() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">Overview</h1>
-        <p className="text-gray-500 text-sm mt-1">Your AI agent activity at a glance.</p>
+        <p className="text-gray-500 text-sm mt-1">Maintenance requests captured by your AI agent, at a glance.</p>
       </div>
 
       {/* Stats */}
@@ -30,11 +30,11 @@ export default async function DashboardOverview() {
       {/* Secondary stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Calls This Month</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Requests This Month</p>
           <p className="text-2xl font-semibold text-gray-900">{stats.total_calls_this_month}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Avg Call Duration</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">Avg AI Call</p>
           <p className="text-2xl font-semibold text-gray-900">{stats.avg_call_duration}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">

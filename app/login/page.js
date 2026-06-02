@@ -2,7 +2,6 @@
 import { signIn } from 'next-auth/react'
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
 
 function safeAfterLoginPath(raw) {
   if (!raw || typeof raw !== 'string') return '/dashboard'
@@ -49,8 +48,8 @@ function LoginForm() {
             />
           </svg>
         </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Herbert AI</h1>
-        <p className="text-gray-500 mt-1 text-sm">Property manager & owner sign-in</p>
+        <h1 className="text-2xl font-semibold text-gray-900">Northbridge Property Co.</h1>
+        <p className="text-gray-500 mt-1 text-sm">Maintenance portal sign-in</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
@@ -127,15 +126,8 @@ function LoginForm() {
         </button>
       </div>
 
-      <p className="text-center text-xs text-gray-500 mt-6 space-y-1">
-        <span className="block text-gray-400">Herbert AI · same login for both portals</span>
-        <span className="block">
-          After sign-in, open the{' '}
-          <Link href="/owner" className="text-indigo-600 hover:text-indigo-800">
-            owner console
-          </Link>{' '}
-          if your email is in <code className="text-[0.7rem] bg-gray-100 px-1 rounded">OWNER_EMAILS</code>.
-        </span>
+      <p className="text-center text-xs text-gray-400 mt-6">
+        Powered by Herbert AI
       </p>
     </div>
   )

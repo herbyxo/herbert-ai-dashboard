@@ -4,66 +4,44 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import {
   LayoutDashboard,
-  Phone,
-  Star,
-  TrendingUp,
-  MessageSquare,
+  ClipboardList,
+  Building2,
   LogOut,
-  Zap,
-  Lock,
 } from 'lucide-react'
 import { mockClient } from '@/lib/mockData'
 
-const allNavItems = [
-  { label: 'Overview',           href: '/dashboard',           icon: LayoutDashboard, product: null },
-  { label: 'Voice Receptionist', href: '/dashboard/voice',     icon: Phone,           product: 'voice' },
-  { label: 'Reviews',            href: '/dashboard/reviews',   icon: Star,            product: 'reviews' },
-  { label: 'SEO',                href: '/dashboard/seo',       icon: TrendingUp,      product: 'seo' },
-  { label: 'Chatbot',            href: '/dashboard/chatbot',   icon: MessageSquare,   product: 'chatbot' },
+const navItems = [
+  { label: 'Overview',   href: '/dashboard',            icon: LayoutDashboard },
+  { label: 'Requests',   href: '/dashboard/requests',   icon: ClipboardList },
+  { label: 'Properties', href: '/dashboard/properties', icon: Building2 },
 ]
 
 export default function Sidebar({ user }) {
   const pathname = usePathname()
-  const active = mockClient.active_products
 
   return (
     <aside className="w-60 shrink-0 bg-white border-r border-gray-200 flex flex-col min-h-screen">
 
-      {/* Logo + business name */}
+      {/* Logo + agency name */}
       <div className="px-5 py-5 border-b border-gray-100">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shrink-0">
-            <Zap className="w-4 h-4 text-white" />
+            <Building2 className="w-4 h-4 text-white" />
           </div>
           <div className="min-w-0">
             <div className="text-sm font-semibold text-gray-900 truncate">{mockClient.business_name}</div>
-            <div className="text-xs text-gray-400">Herbert AI Portal</div>
+            <div className="text-xs text-gray-400">Maintenance Portal</div>
           </div>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {allNavItems.map(({ label, href, icon: Icon, product }) => {
+        {navItems.map(({ label, href, icon: Icon }) => {
           const isActive =
             href === '/dashboard'
               ? pathname === '/dashboard'
               : pathname.startsWith(href)
-          const isLocked = product && !active.includes(product)
-
-          if (isLocked) {
-            return (
-              <div
-                key={href}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 cursor-not-allowed select-none"
-                title="Not in your current plan"
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                {label}
-                <Lock className="w-3 h-3 ml-auto opacity-60" />
-              </div>
-            )
-          }
 
           return (
             <Link
@@ -95,6 +73,9 @@ export default function Sidebar({ user }) {
           <LogOut className="w-4 h-4 shrink-0" />
           Sign out
         </button>
+        <div className="px-3 pt-3 mt-2 border-t border-gray-100">
+          <div className="text-[0.7rem] text-gray-300">Powered by Herbert AI</div>
+        </div>
       </div>
 
     </aside>

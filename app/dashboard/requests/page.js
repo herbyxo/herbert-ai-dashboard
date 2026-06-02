@@ -5,9 +5,10 @@ import { urgencyBadge, statusBadge, formatDate } from '@/lib/utils'
 const STATUS_FILTERS = ['all', 'pending', 'approved', 'booked', 'resolved', 'denied']
 
 export default async function RequestsPage({ searchParams }) {
+  const sp = await searchParams
   const requests = await getClientRequests()
-  const filter = searchParams?.status || 'all'
-  const q = (searchParams?.q || '').trim().toLowerCase()
+  const filter = sp?.status || 'all'
+  const q = (sp?.q || '').trim().toLowerCase()
   const filtered = filter === 'all'
     ? requests
     : requests.filter(r => r.status === filter)
@@ -36,7 +37,7 @@ export default async function RequestsPage({ searchParams }) {
           <input
             type="text"
             name="q"
-            defaultValue={searchParams?.q || ''}
+            defaultValue={sp?.q || ''}
             placeholder="Search by tenant, property, issue, request ID..."
             className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
           />
