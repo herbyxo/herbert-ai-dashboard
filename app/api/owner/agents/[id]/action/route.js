@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
+import { isOwnerEmail } from '@/lib/isOwner'
 import { postJson } from '@/lib/http'
 
 function targetUrl(id) {
@@ -10,6 +12,11 @@ function targetUrl(id) {
 }
 
 export async function POST(request, { params }) {
+  const session = await auth()
+  if (!isOwnerEmail(session?.user?.email)) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 })
+  }
+
   const { id } = await params
   const body = await request.json().catch(() => null)
   const action = body?.action
