@@ -43,11 +43,6 @@ export default async function RequestsPage({ searchParams }) {
           />
           {filter !== 'all' && <input type="hidden" name="status" value={filter} />}
         </form>
-        {!process.env.CLIENT_REQUESTS_ENDPOINT && !process.env.CLIENT_API_BASE_URL && (
-          <p className="text-xs text-amber-700 mt-2">
-            Running in mock data mode. Set CLIENT API env vars to use live client data.
-          </p>
-        )}
       </div>
 
       {/* Filters */}
